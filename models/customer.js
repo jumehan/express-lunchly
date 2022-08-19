@@ -14,7 +14,6 @@ class Customer {
     this.lastName = lastName;
     this.phone = phone;
     this.notes = notes;
-    // this.fullName = this.fullName();
   }
 
   /** getter for customer firstName and lastName and return full name */
@@ -23,11 +22,6 @@ class Customer {
     this._fullName = `${this.firstName} ${this.lastName}`;
     return this._fullName;
   }
-
-  // /** setter for customer's fullName */
-  // set fullName(name) {
-  //   this._fullName = `${this.firstName} ${this.lastName}`;
-  // }
 
   /** getter for notes */
   get notes() {
@@ -42,10 +36,6 @@ class Customer {
     this._notes = notes;
   }
 
-
-
-
-  /**
 
   /** get by customer by name via search query
    * or gets all customers if no search term. */
