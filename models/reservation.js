@@ -55,25 +55,29 @@ class Reservation {
           [this.customerId, this.numGuests, this.startAt, this.notes],
       );
       this.id = result.rows[0].id;
-    } else {
-      // update existing reservation
-      await db.query(
-            `UPDATE customers
-             SET customer_id = $1,
-                 num_guests = $2,
-                 start_at = $3,
-                 notes = $4
-             WHERE id = $5`, [
-            this.customerId,
-            this.numGuests,
-            this.phone,
-            this.notes,
-            this.id,
-          ],
-      );
     }
-  }
 
+    // TODO: update reservation
+  //  else {
+  //     // update existing reservation
+  //     await db.query(
+  //           `UPDATE customers
+  //            SET customer_id = $1,
+  //                num_guests = $2,
+  //                start_at = $3,
+  //                notes = $4
+  //            WHERE id = $5`, [
+  //           this.customerId,
+  //           this.numGuests,
+  //           this.phone,
+  //           this.notes,
+  //           this.id,
+  //         ],
+  //     );
+  //   }
+  // }
+
+  }
 }
 
 

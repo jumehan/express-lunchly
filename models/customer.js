@@ -14,31 +14,42 @@ class Customer {
     this.lastName = lastName;
     this.phone = phone;
     this.notes = notes;
-    this.fullName = this.fullName();
+    // this.fullName = this.fullName();
   }
 
-  /** get customer firstName and lastName and return full name */
+  /** getter for customer firstName and lastName and return full name */
 
-  fullName() {
-    return `${this.firstName} ${this.lastName}`;
+  get fullName() {
+    this._fullName = `${this.firstName} ${this.lastName}`;
+    return this._fullName;
   }
 
-  /** find all customers. */
+  // /** setter for customer's fullName */
+  // set fullName(name) {
+  //   this._fullName = `${this.firstName} ${this.lastName}`;
+  // }
 
-  static async all() {
-    const results = await db.query(
-      `SELECT id,
-                  first_name AS "firstName",
-                  last_name  AS "lastName",
-                  phone,
-                  notes
-           FROM customers
-           ORDER BY last_name, first_name`,
-    );
-    return results.rows.map(c => new Customer(c));
+  /** getter for notes */
+  get notes() {
+    return this._notes;
   }
 
-  /** get by customer by name via search query. */
+  /** setter for notes */
+  set notes(notes) {
+    if (!notes) {
+      this._notes = "";
+    }
+    this._notes = notes;
+  }
+
+
+
+
+  /**
+
+  /** get by customer by name via search query
+   * or gets all customers if no search term. */
+
   static async getByName(name) {
     const results = await db.query(
       `SELECT id,
@@ -47,8 +58,7 @@ class Customer {
               phone,
               notes
        FROM customers
-       WHERE first_name ILIKE $1
-       OR last_name ILIKE $1`,
+       WHERE CONCAT(first_name, ' ', last_name) ILIKE $1`,
       [`%${name}%`],
     );
 
@@ -60,12 +70,12 @@ class Customer {
   static async get(id) {
     const results = await db.query(
       `SELECT id,
-                  first_name AS "firstName",
-                  last_name  AS "lastName",
-                  phone,
-                  notes
-           FROM customers
-           WHERE id = $1`,
+      first_name AS "firstName",
+      last_name  AS "lastName",
+      phone,
+      notes
+      FROM customers
+      WHERE id = $1`,
       [id],
     );
 
@@ -114,6 +124,42 @@ class Customer {
       );
     }
   }
+
+  /** finds top 10 customers */
+
+  static async findTopCustomers() {
+    const results = await db.query(
+      `SELECT c.id as id,
+              first_name as "firstName",
+              last_name as "lastName",
+              phone,
+              c.notes as "notes"
+              FROM customers c
+      JOIN reservations r
+      ON c.id = r.customer_id
+      GROUP BY c.id
+      ORDER BY COUNT(c.id) DESC
+      LIMIT 10`,
+    );
+    return results.rows.map(c => new Customer(c));
+  }
+
 }
 
 module.exports = Customer;
+
+
+    // /** find all customers. */
+
+    // static async all() {
+    //   const results = await db.query(
+    //     `SELECT id,
+    //                 first_name AS "firstName",
+    //                 last_name  AS "lastName",
+    //                 phone,
+    //                 notes
+    //          FROM customers
+    //          ORDER BY last_name, first_name`,
+    //   );
+    //   return results.rows.map(c => new Customer(c));
+    // }

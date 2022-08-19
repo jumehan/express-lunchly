@@ -12,14 +12,17 @@ const router = new express.Router();
 /** Homepage: show list of customers. */
 
 router.get("/", async function (req, res, next) {
-  const search = req.query.search
+  const search = req.query.search || " ";
 
-  if (search) {
-    const customers = await Customer.getByName(search);
-    return res.render("customer_list.html", { customers, search });
-  }
+  // if (search) {
+  const customers = await Customer.getByName(search);
+  return res.render("customer_list.html", { customers, search });
+});
 
-  const customers = await Customer.all();
+/** Shows top 10 customers */
+
+router.get("/top-ten/", async function (req, res, next) {
+  const customers = await Customer.findTopCustomers();
   return res.render("customer_list.html", { customers });
 });
 
@@ -88,5 +91,7 @@ router.post("/:id/add-reservation/", async function (req, res, next) {
 
   return res.redirect(`/${customerId}/`);
 });
+
+
 
 module.exports = router;
