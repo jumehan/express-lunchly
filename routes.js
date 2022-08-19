@@ -67,8 +67,8 @@ router.post("/:id/edit/", async function (req, res, next) {
 
 router.post("/:id/add-reservation/", async function (req, res, next) {
   const customerId = req.params.id;
-  const startAt = new Date(req.body.startAt);
   const numGuests = req.body.numGuests;
+  const startAt = new Date(req.body.startAt);
   const notes = req.body.notes;
 
   const reservation = new Reservation({

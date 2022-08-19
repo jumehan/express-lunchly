@@ -39,6 +39,41 @@ class Reservation {
 
     return results.rows.map(row => new Reservation(row));
   }
+
+  /** save a reservation */
+
+  // id auto generated from SQL
+  // customer_id is passed in route as req.params.customer_id
+
+  async save() {
+    // if reservation id doesnt exist, create a new reservation
+    if (this.id === undefined) {
+      const result = await db.query(
+            `INSERT INTO reservations (customer_id, num_guests, start_at, notes)
+             VALUES ($1, $2, $3, $4)
+             RETURNING id`,
+          [this.customerId, this.numGuests, this.startAt, this.notes],
+      );
+      this.id = result.rows[0].id;
+    } else {
+      // update existing reservation
+      await db.query(
+            `UPDATE customers
+             SET customer_id = $1,
+                 num_guests = $2,
+                 start_at = $3,
+                 notes = $4
+             WHERE id = $5`, [
+            this.customerId,
+            this.numGuests,
+            this.phone,
+            this.notes,
+            this.id,
+          ],
+      );
+    }
+  }
+
 }
 
 
